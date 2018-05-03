@@ -15,24 +15,18 @@ public enum LocationAuthorizationType: String {
     case requestWhenInUseAuthorization
 }
 
-open class LocationPermissions: NSObject {
+open class LocationPermissions: NSObject, ServicePermissions {
 
     private var authType: LocationAuthorizationType
     private var locationManager: CLLocationManager
     private var requestPermissionsHandler: ((PermissionsState) -> Void)?
 
+    public typealias PermissionsState = CLAuthorizationStatus
+    
     public init(authType: LocationAuthorizationType = .requestAlwaysAuthorization) {
         self.authType = authType
         locationManager = CLLocationManager()
     }
-    
-}
-
-// MARK: - ServicePermissions -
-
-extension LocationPermissions: ServicePermissions {
-    
-    public typealias PermissionsState = CLAuthorizationStatus
     
     public func requestPermissions(handler: @escaping (PermissionsState) -> Void) {
         requestPermissionsHandler = handler
@@ -48,6 +42,7 @@ extension LocationPermissions: ServicePermissions {
     public func permissionsState() -> PermissionsState {
         return CLLocationManager.authorizationStatus()
     }
+    
 }
 
 // MARK: - CLLocationManagerDelegate -
