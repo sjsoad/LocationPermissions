@@ -15,14 +15,20 @@ public enum LocationAuthorizationType: String {
     case requestWhenInUseAuthorization
 }
 
-open class LocationPermissions: NSObject, ServicePermissions {
+public protocol LocationPermissions {
+    
+    typealias PermissionsState = CLAuthorizationStatus
+    func requestPermissions(handler: @escaping (PermissionsState) -> Void)
+    func permissionsState() -> PermissionsState
+    
+}
+
+open class DefaultLocationPermissions: NSObject, LocationPermissions {
 
     private var authType: LocationAuthorizationType
     private var locationManager: CLLocationManager
     private var requestPermissionsHandler: ((PermissionsState) -> Void)?
 
-    public typealias PermissionsState = CLAuthorizationStatus
-    
     public init(authType: LocationAuthorizationType = .requestAlwaysAuthorization) {
         self.authType = authType
         locationManager = CLLocationManager()
@@ -47,11 +53,14 @@ open class LocationPermissions: NSObject, ServicePermissions {
 
 // MARK: - CLLocationManagerDelegate -
 
-extension LocationPermissions: CLLocationManagerDelegate {
+extension DefaultLocationPermissions: CLLocationManagerDelegate {
 
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         // WARNING: - delegate method called for notDetermined state too -
-        requestPermissionsHandler?(permissionsState())
+        DispatchQueue.main.async { [weak self] in
+            guard let `self` = self else { return }
+            self.requestPermissionsHandler?(self.permissionsState())
+        }
     }
 
 }
