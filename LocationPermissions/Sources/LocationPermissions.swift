@@ -8,7 +8,6 @@
 
 import UIKit
 import CoreLocation
-import SKServicePermissions
 
 public enum LocationAuthorizationType: String {
     case requestAlwaysAuthorization
