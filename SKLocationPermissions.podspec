@@ -9,7 +9,7 @@ s.summary = "LocationPermissions allows you to check Location permissions"
 s.requires_arc = true
 
 # 2
-s.version = "0.0.4"
+s.version = "0.0.5"
 
 # 3
 s.license = { :type => "MIT", :file => "LICENSE" }
@@ -29,8 +29,5 @@ s.framework = "CoreLocation"
 
 # 8
 s.source_files = "LocationPermissions/**/*.{swift}"
-
-#10
-s.dependency 'SKServicePermissions'
 
 end
